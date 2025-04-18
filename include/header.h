@@ -6,7 +6,7 @@
 #define DEBUGPRINT 
 #define DBGLINELENGTH  50
 #define SLEEPTIME     100
-#define ACCMOVETHR      2
+#define ACCMOVETHR     10
 
 typedef enum {
   ST_START,

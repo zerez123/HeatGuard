@@ -69,5 +69,12 @@ bool accIsMove(accAxis_t *ref, int thr)
         if(abs(ref->y - accCurrPos.y) > thr) res |= true;
         if(abs(ref->z - accCurrPos.z) > thr) res |= true;
     }
+    if(res) {
+        DBG_PRINT("Move detected, THR %d", thr);
+        accPrintData1(ref);
+        accPrintData(0);
+
+
+    }
     return res;
 }

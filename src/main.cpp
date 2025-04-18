@@ -67,6 +67,8 @@ void stateMachine(programEvent_t ev)
           dioLedGreen(LEDON);
           dioLenRed(LEDOFF);
           digitalWrite(RELAYP, LOADON);
+          DBG_PRINT("%s Locked", __func__);
+          accPrintData1(&accOnVal);
         }
       }
     break;
@@ -79,7 +81,6 @@ void stateMachine(programEvent_t ev)
       }
     break;
     case ST_POWEROFF:
-
       if (ev == EV_KEYPRESSED) {
         programState = ST_POWERON;
         dioLedGreen(LEDON);
@@ -88,7 +89,7 @@ void stateMachine(programEvent_t ev)
       }
     break;
   }
-}
+} 
 
 // Periodics
 void per100ms(unsigned int count)

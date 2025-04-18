@@ -3,8 +3,8 @@
 
 // ADC channels
 #define XAXINPUT    A0 
-#define YAXINPUT    A1  
-#define ZAXINPUT    A2 
+#define YAXINPUT    A2  
+#define ZAXINPUT    A1 
 
 #define ACC_N_READS 5
 

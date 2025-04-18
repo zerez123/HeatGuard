@@ -11,7 +11,7 @@ void dioLedGreen(int s)
 
 void dioLenRed(int s)
 {
-  digitalWrite(GLEDP, s);
+  digitalWrite(RLEDP, s);
 }
 
 bool dioPbGetStat(pbState_t *pbs )
