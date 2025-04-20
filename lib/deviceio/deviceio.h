@@ -1,33 +1,46 @@
+
 #ifndef _DEVICEIO_H_
 #define _DEVICEIO_H_
 
+// Arduino Core Header
+#include <Arduino.h>
+
 // Other ports
-#define RLEDP   3
-#define GLEDP   4
-#define RELAYP  5
-#define PBUTP   2
+#define RLEDP  3
+#define GLEDP  4
+#define RELAYP 5
+#define PBUTP  2
 
-#define LEDON   HIGH
-#define LEDOFF  LOW
-#define LOADON  HIGH
+#define LEDON  HIGH
+#define LEDOFF LOW
+#define LOADON HIGH
 #define LOADOFF LOW
-#define PBPRESS LOW  //Push button press
+#define PBPRESS LOW // Push button press
 
-typedef enum {
+enum class pushButState_t {
     PUSHED,
     RELAESED
-} pushButState_t;
+};
 
-typedef struct {
-   pushButState_t st;
-   bool valid;
-   bool changed;
-} pbState_t;
+struct pbState_t {
+    pushButState_t st;
+    bool valid;
+    bool changed;
+};
 
-void dioLedGreen(int s);
-void dioLenRed(int s);
-bool dioPbGetStat(pbState_t *pbs );
-void dioPbRead (unsigned int s);
+class DeviceIO {
+private:
+    pbState_t pushButDebState;
+    unsigned int pbDebCntr = 0;
+    int pbLastStat = HIGH; // Initialize to released state (assuming pull-up)
 
+public:
+    DeviceIO();
+    void ledGreen(int s);
+    void ledRed(int s);
+    void Relay(int s);
+    bool pbGetStat(pbState_t *pbs);
+    void pbRead(unsigned int s);
+};
 
 #endif //_DEVICEIO_H_

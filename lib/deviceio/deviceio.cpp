@@ -1,44 +1,57 @@
-#include <Arduino.h>
-#include "..\..\include\header.h"
+
 #include "deviceio.h"
-
-static pbState_t  pushButDebState;
-
-void dioLedGreen(int s)
-{
-  digitalWrite(GLEDP, s);
+#include "..\..\include\header.h"
+DeviceIO::DeviceIO() : pushButDebState({pushButState_t::RELAESED, false, false}) {
+    pinMode(GLEDP, OUTPUT);
+    pinMode(RLEDP, OUTPUT);
+    pinMode(PBUTP, INPUT_PULLUP); // Assuming a pull-up resistor for the button
+    pinMode(RELAYP, OUTPUT);
 }
 
-void dioLenRed(int s)
+void DeviceIO::ledGreen(int s)
 {
-  digitalWrite(RLEDP, s);
+    digitalWrite(GLEDP, s);
 }
 
-bool dioPbGetStat(pbState_t *pbs )
+void DeviceIO::ledRed(int s)
 {
-    if(pushButDebState.valid == true) {
+    digitalWrite(RLEDP, s);
+}
+
+void DeviceIO::Relay(int s)
+{
+    digitalWrite(RELAYP, s);
+}
+
+bool DeviceIO::pbGetStat(pbState_t *pbs)
+{
+    if (pushButDebState.valid) {
         *pbs = pushButDebState;
     }
     return pushButDebState.valid;
 }
 
-void dioPbRead (unsigned int s)
+void DeviceIO::pbRead(unsigned int s)
 {
-  static int pbDebCntr = 0;
-  static int pbLastStat;
-  int pbStat = digitalRead(PBUTP);
+    int pbStat = digitalRead(PBUTP);
 
-  if (pbStat == pbLastStat) {
-    ++pbDebCntr;
-  }
-  else {
-    pbDebCntr = 0;
-    pbLastStat = pbStat;
-  }
-  if (pbDebCntr == 5) {
-    if (PBPRESS == pbStat) pushButDebState.st = PUSHED;
-    else                   pushButDebState.st = RELAESED;
-    pushButDebState.valid = true;
-    pushButDebState.changed = false;
-  }
-} 
+    if (pbStat == pbLastStat) {
+        ++pbDebCntr;
+    }
+    else {
+        pbDebCntr = 0;
+        pbLastStat = pbStat;
+    }
+
+    if (pbDebCntr >= 5) {
+        if (PBPRESS == pbStat) {
+            pushButDebState.st = pushButState_t::PUSHED;
+        }
+        else {
+            pushButDebState.st = pushButState_t::RELAESED;
+        }
+        pushButDebState.valid = true;
+        pushButDebState.changed = (pushButDebState.st != (pbStat == PBPRESS ? pushButState_t::PUSHED : pushButState_t::RELAESED));
+        pbDebCntr = 0; // Reset counter after valid state
+    }
+}

@@ -1,27 +1,27 @@
+// header.h
 #ifndef _HEADER_H_
 #define _HEADER_H_
 
 #include <Arduino.h>
 
-#define DEBUGPRINT 
+#define DEBUGPRINT
 #define DBGLINELENGTH  50
-#define SLEEPTIME     100
+#define SLEEPTIME      100
 #define ACCMOVETHR     10
 
-typedef enum {
-  ST_START,
-  ST_POWERON,
-  ST_POWEROFF
-} programState_t;
+enum class programState_t {
+    ST_START,
+    ST_POWERON,
+    ST_POWEROFF
+};
 
-typedef enum {
+enum class programEvent_t {
     EV_NULL,
     EV_KEYPRESSED,
     EV_KEYRELEASED,
     EV_ACCMOVE,
-    EV_LATST
-} programEvent_t;
-
+    EV_LAST
+};
 
 #ifdef DEBUGPRINT
     #define DBG_PRINT(fmt, ...) do { \
