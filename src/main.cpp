@@ -36,7 +36,24 @@ pbState_t      pushButState;
 accAxis_t      accOnVal;
 
 // put function declarations here:
+
+// Initializations
+void setup();
+
+// Periodics
+void per100ms(unsigned int count);
+void per500ms(unsigned int count);
+void per1000ms(unsigned int count);
+void per5000ms(unsigned int count);
+
+// State machine
+static void enterOnState(void);
+static void enterOffState(void);
 void stateMachine(programEvent_t ev);
+
+// Main loop
+void loop();
+
 
 // Initializations
 void setup() {
@@ -55,6 +72,25 @@ void setup() {
     DBG_PRINT("Program start\n");
 }
 
+// State machine
+static void enterOnState(void)
+{
+  if (accGetCurPos(&accOnVal) == true) {
+    programState = ST_POWERON;
+    dioLedGreen(LEDON);
+    dioLenRed(LEDOFF);
+    digitalWrite(RELAYP, LOADON);
+    accPrintData1(&accOnVal);
+  }
+}
+
+static void enterOffState(void)
+{
+  programState = ST_POWEROFF;
+  dioLedGreen(LEDOFF);
+  dioLenRed(LEDON);
+  digitalWrite(RELAYP, LOADOFF);
+}
 
 void stateMachine(programEvent_t ev)
 {
@@ -62,30 +98,17 @@ void stateMachine(programEvent_t ev)
   switch(programState) {
     case ST_START:
       if (ev == EV_KEYPRESSED) {
-        if (accGetCurPos(&accOnVal) == true) {
-          programState = ST_POWERON;
-          dioLedGreen(LEDON);
-          dioLenRed(LEDOFF);
-          digitalWrite(RELAYP, LOADON);
-          DBG_PRINT("%s Locked", __func__);
-          accPrintData1(&accOnVal);
-        }
+        enterOnState();
       }
     break;
     case ST_POWERON:
       if ((ev == EV_KEYPRESSED) || (ev == EV_ACCMOVE)) {
-        programState = ST_POWEROFF;
-        dioLedGreen(LEDOFF);
-        dioLenRed(LEDON);
-        digitalWrite(RELAYP, LOADOFF);
+        enterOffState();
       }
     break;
     case ST_POWEROFF:
       if (ev == EV_KEYPRESSED) {
-        programState = ST_POWERON;
-        dioLedGreen(LEDON);
-        dioLenRed(LEDOFF);
-        digitalWrite(RELAYP, LOADON);
+        enterOnState();
       }
     break;
   }
@@ -100,19 +123,12 @@ void per100ms(unsigned int count)
 
 void per500ms(unsigned int count)
 {
-
-}
-
-void per1000ms(unsigned int count)
-{
   pbState_t pbs;
   bool      pbPressed = false;
   bool      pbReleased = false;
   bool      accChange = false;
 
-
-
-// Handle push but change
+  // Handle push but change
   if (dioPbGetStat(&pbs) == true) {
     if(pushButState.valid == true) {
         if (pushButState.st == pbs.st) {
@@ -127,7 +143,6 @@ void per1000ms(unsigned int count)
     pushButState = pbs;
   }
 
-  accChange = accIsMove(&accOnVal, ACCMOVETHR);
   if (pbPressed == true) {
     stateMachine(EV_KEYPRESSED);
     pbPressed = false;
@@ -136,21 +151,20 @@ void per1000ms(unsigned int count)
     stateMachine(EV_KEYRELEASED);
     pbReleased = false;
   }
+  accChange = accIsMove(&accOnVal, ACCMOVETHR);
   if(accChange == true) {
     stateMachine(EV_ACCMOVE);
     accChange = false;
   }
-
 }
 
+void per1000ms(unsigned int count)
+{
+
+}
 void per5000ms(unsigned int count)
 {
-  // if(count == 50) {
-  //   stateMachine(EV_KEYPRESSED);
-  // }
- 
   accPrintData(count);
-
 }
 
 // Main loop

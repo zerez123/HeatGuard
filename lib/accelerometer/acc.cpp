@@ -1,11 +1,13 @@
 #include "..\..\include\header.h"
 #include "acc.h"
 
+#if ACC_N_READS > 1
 static accAxis_t accDebRead[ACC_N_READS];
-static accAxis_t accCurrPos;
 static int accCnt = 0;
+#endif
+static accAxis_t accCurrPos;
 
-
+#if ACC_N_READS > 1
 static void accMakeAve(void)
 {
     accCurrPos = {0};
@@ -23,9 +25,11 @@ static void accMakeAve(void)
     // DBG_PRINT("Ave - ");
     // accPrintData1(&accCurrPos);
 }
+#endif
  
 void accRead(void)
 {
+#if ACC_N_READS > 1
     if (accCnt < ACC_N_READS) {
         accDebRead[accCnt].x = analogRead(XAXINPUT);
         accDebRead[accCnt].y = analogRead(YAXINPUT);
@@ -37,6 +41,12 @@ void accRead(void)
         accMakeAve();
         accCnt = 0;
     }
+#else
+    accCurrPos.x = analogRead(XAXINPUT);
+    accCurrPos.y = analogRead(YAXINPUT);
+    accCurrPos.z = analogRead(ZAXINPUT);
+    accCurrPos.valid = true;
+#endif
 }
 
 bool accGetCurPos(accAxis_t *d)
@@ -71,10 +81,10 @@ bool accIsMove(accAxis_t *ref, int thr)
     }
     if(res) {
         DBG_PRINT("Move detected, THR %d", thr);
+        DBG_PRINT("Ref:");
         accPrintData1(ref);
+        DBG_PRINT("======");
         accPrintData(0);
-
-
     }
     return res;
 }

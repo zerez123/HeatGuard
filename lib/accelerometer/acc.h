@@ -2,11 +2,11 @@
 #define _ACC_H_
 
 // ADC channels
-#define XAXINPUT    A0 
-#define YAXINPUT    A2  
-#define ZAXINPUT    A1 
+#define XAXINPUT    A2 
+#define YAXINPUT    A1  
+#define ZAXINPUT    A0 
 
-#define ACC_N_READS 5
+#define ACC_N_READS 3
 
 typedef struct {
     int x;
