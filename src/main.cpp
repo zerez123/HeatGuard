@@ -1,4 +1,3 @@
-// HeatGuard.cpp (or your main .cpp file)
 /*
  * Copyright (C) 2025 Erez Zuler
  *

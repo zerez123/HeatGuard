@@ -1,6 +1,5 @@
 
-#ifndef _DEVICEIO_H_
-#define _DEVICEIO_H_
+#pragma once
 
 // Arduino Core Header
 #include <Arduino.h>
@@ -42,5 +41,3 @@ public:
     bool pbGetStat(pbState_t *pbs);
     void pbRead(unsigned int s);
 };
-
-#endif //_DEVICEIO_H_

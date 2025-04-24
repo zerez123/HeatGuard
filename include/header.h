@@ -1,6 +1,4 @@
-// header.h
-#ifndef _HEADER_H_
-#define _HEADER_H_
+#pragma once
 
 #include <Arduino.h>
 
@@ -32,5 +30,3 @@ enum class programEvent_t {
 #else
     #define DBG_PRINT(fmt, ...)  // Nothing
 #endif
-
-#endif //_HEADER_H_

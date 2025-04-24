@@ -1,5 +1,4 @@
-#ifndef _ACC_H_
-#define _ACC_H_
+#pragma once
 
 // Arduino Core Header
 #include <Arduino.h>
@@ -36,5 +35,3 @@ public:
     void printData(const accAxis_t *accAx) const;
     bool isMove(const accAxis_t *ref, int thr) const;
 };
-
-#endif //_ACC_H_
